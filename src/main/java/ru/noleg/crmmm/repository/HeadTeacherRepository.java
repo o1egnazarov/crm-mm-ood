@@ -1,4 +1,7 @@
 package ru.noleg.crmmm.repository;
 
-public interface HeadTeacherRepository {
+import org.springframework.data.repository.CrudRepository;
+import ru.noleg.crmmm.repository.model.HeadTeacher;
+
+public interface HeadTeacherRepository extends CrudRepository<HeadTeacher,Long> {
 }

@@ -1,4 +1,4 @@
 package ru.noleg.crmmm.service;
 
-public class AdminService {
+public interface AdminService {
 }

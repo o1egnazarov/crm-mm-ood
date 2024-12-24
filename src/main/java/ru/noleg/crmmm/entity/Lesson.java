@@ -12,7 +12,7 @@ import java.util.Map;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class Class {
+public class Lesson {
     private String title;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;

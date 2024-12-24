@@ -1,4 +1,4 @@
 package ru.noleg.crmmm.service;
 
-public interface ClassService {
+public interface LessonService {
 }
