@@ -7,6 +7,7 @@ import ru.noleg.crmmm.repository.StudentRepository;
 import ru.noleg.crmmm.service.PaymentService;
 import ru.noleg.crmmm.service.StudentService;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -22,7 +23,7 @@ public class StudentServiceDefaultImpl implements StudentService {
     }
 
     @Override
-    public List<Student> findByParent(long id) {
+    public List<Student> getStudentByParentId(long id) {
         // Получение студентов по id родителя
         return StreamSupport.stream(studentRepository.findAll().spliterator(), false)
                 .filter(student -> student.getParent() != null && student.getParent().getId() == id)
@@ -50,10 +51,8 @@ public class StudentServiceDefaultImpl implements StudentService {
     public Student updateStudent(long id, Student updatedStudent) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // Update the student's information
         existingStudent.setName(updatedStudent.getName());
         existingStudent.setParent(updatedStudent.getParent());
-        // Add other fields as needed
 
         return studentRepository.save(existingStudent);
     }
@@ -61,6 +60,11 @@ public class StudentServiceDefaultImpl implements StudentService {
     public void deleteStudent(long id) {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
         studentRepository.delete(existingStudent);
+    }
+
+    @Override
+    public Collection<Student> getStudents() {
+        return (Collection<Student>) studentRepository.findAll();
     }
 
 }
