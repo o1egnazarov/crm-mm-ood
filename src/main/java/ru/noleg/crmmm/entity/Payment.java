@@ -29,6 +29,12 @@ public class Payment {
     public Payment() {
     }
 
+    public Payment(Student student, int amount, boolean b) {
+        this.student = student;
+        this.amount = amount;
+        this.paymentDateTime = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }

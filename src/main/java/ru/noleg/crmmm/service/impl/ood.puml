@@ -14,9 +14,13 @@ package "Controllers"{
     -TeacherService teacherService
     + createTeacher(Teacher teacher) : ResponseEntity<>
     + deleteTeacher(long id) : ResponseEntity<>
+    + getClassesByTeacher(long teacherId) : ResponseEntity<List<CLss>>
+  }
+  Class HeadTeacherController{
+    - HeadTeacherService teacherService
     + assignTeacherToGroup(long teacherId, Group group) : ResponseEntity<>
     + removeGroupFromTeacher(long teacherId, Group group) : ResponseEntity<>
-    + getClassesByTeacher(long teacherId) : ResponseEntity<List<CLss>>
+
   }
   Class GroupController{
     -GroupService groupService
@@ -33,37 +37,80 @@ package "Controllers"{
     + pay(Student student, int amount) : ResponseEntity<Student>
   }
 
-  Class AdminCotroller {
+  Class AdminController {
     - AdminService adminService
-    + addHeadTeacher(headTeacher: headTeacher): long
-    + fireHeadTeacher(headTeacherId: long): void
-    + editHeadTeacher(headTeacherId: long): void
-    + notify(): String
-    + handlePayment(payment: Payment): String
+
+
+    + getPayments() : ResponseEntity<List<Payment>>
+    + addHeadTeacher(HeadTeacher headTeacher): ResponseEntity<>
+    + fireHeadTeacher(long headTeacherId): ResponseEntity<>
+    + editHeadTeacher(long headTeacherId): ResponseEntity<>
+
+    + handlePayment(payment: Payment): ResponseEntity<String>
   }
 }
 
 package "Management"{
 
-  Class Admin {
-    + addHeadTeacher(headTeacher: headTeacher): long
-    + fireHeadTeacher(headTeacherId: long): void
-    + editHeadTeacher(headTeacherId: long): void
-    + notify(): String
-    + handlePayment(payment: Payment): String
-  }
+    Interface AdminService{
+        + getPayments() : List<Payment>
+        + addHeadTeacher(HeadTeacher headTeacher): void
+        + fireHeadTeacher(Long headTeacherId): void
+        + editHeadTeacher(Long headTeacherId): void
+     }
 
-  Class HeadTeacher{
-    - String name
-    - List<Teacher> teachers
-    + addTeacher(teacher: Teacher): long
-    + removeTeacher(teacherId: long): void
+    Class AdminServiceImpl implements AdminService {
+        -HeadTeacherService headTeacherService
+        -HeadTeacherRepository headTeacherRepository;
+        -PaymentService paymentService
+
+        + getPayments() : List<Payment>
+
+        + addHeadTeacher(HeadTeacher headTeacher): void
+        + fireHeadTeacher(Long headTeacherId): void
+        + editHeadTeacher(Long headTeacherId): void
+      }
+
+    Class HeadTeacher{
+      - String name
+      - List<Teacher> teachers
+      + addTeacher(teacher: Teacher): long
+      + removeTeacher(teacherId: long): void
+      + removeGroupFromTeacher(teacher: Teacher, groupId: long): void
+      + assignTeacherToGroup(teacher: Teacher, group: Group): void
+    }
+
+    Interface HeadTeacherService {
+        + createHeadTeacher(headTeacher: headTeacher)
+        + removeGroupFromTeacher(teacher: Teacher, groupId: long): void
+        + assignTeacherToGroup(teacher: Teacher, group: Group): void
+
+    }
+
+    Class HeadTeacherServiceImpl implements HeadTeacherService {
+    - TeacherService teacherService;
+
+    + createHeadTeacher(headTeacher: headTeacher)
     + removeGroupFromTeacher(teacher: Teacher, groupId: long): void
     + assignTeacherToGroup(teacher: Teacher, group: Group): void
-  }
+    }
 
+
+    Interface HeadTeacherRepository {
+       + save(HeadTeacher headTeacher))
+       + update(long id) : void
+       + delete(long id) : void
+       + get(long id) : HeadTeacher
+      }
+Class HeadTeacherRepositoryImpl implements HeadTeacherRepository{
+       - Db dataBase
+       + save(HeadTeacher headTeacher)
+       + update(long id) : void
+       + delete(long id) : void
+       + get(long id) : HeadTeacher
+      }
 }
-package "Class"{
+package "Classs"{
 Class Class {
     - Date date
     - Map<Student, Boolean> attendance
@@ -104,7 +151,7 @@ Class Class {
   ClassRepository --> Class
   ClassServiceImpl --> ClassRepository
 }
-package "Teacher{
+package "Teachers"{
 Class Teacher {
     - String name
     - String surname
@@ -155,7 +202,7 @@ Class Teacher {
   TeacherRepository --> Teacher
   TeacherServiceImpl --> TeacherRepository
 }
-package "Group"{
+package "Groups"{
   Class Group {
     - String name
     - List<Student> students
@@ -180,7 +227,9 @@ package "Group"{
     + createGroup(Group group)
     + deleteGroup(long id)
     + editGroup(Group group)
-    + addStudentToGroup(Student student, long groupId): void
+
+Олег Назаров, [25.12.2024 22:34]
++ addStudentToGroup(Student student, long groupId): void
     + removeStudentFromGroup(Student student, long groupId): void
   }
   Interface GroupRepository {
@@ -265,26 +314,7 @@ Class Student {
   StudentServiceImpl --> StudentRepository
 }
 
-package "Finance"{
-
-  Class Notifier {
-   - List<Payment> payments
-   + notifyDebtor(parent: Parent) : Notification
-   + getNotifications() : List<Notification>
-  }
-Class Notification {
-   - String message
-   - int ammountOfDebt
-   + generateMessage() : String
-   + getNotificationInfo() : String
-  }
-
-  Class PaymentOperator {
-    - List<Parent> debtors
-    - List<Payment> payments
-    + acceptPayment(payment: Payment) : void
-    + sendPaymentToAdmin(payment: Payment) : void
-  }
+package "Finances"{
 
   Interface PaymentService{
     + acceptPayment(payment: Payment) : void
@@ -292,83 +322,65 @@ Class Notification {
   }
 
   Class PaymentServiceImpl implements PaymentService{
+    - PaymentRepository paymentRepository
     + acceptPayment(payment: Payment) : void
+    getPayment(): Payment
   }
+
+
 
   Interface PaymentRepository{
-  }
-
-  Class PaymentRepositoryImpl implements PaymentRepository{
-    -Db dataBase
-  }
-
-  PaymentService --> PaymentRepository
-
-  Class PaymentSenderService {
-    -PaymentService paymentService
-    + sendPaymentToUniversity(payment: Payment) : void
-  }
-
-  PaymentSenderService --> PaymentService
-
-  Interface NotificationService{
-    + sendPaymentToUniversity(payment: Payment) : void
-  }
-
-  Class NotificationServiceImpl implements NotificationService{
-
+    savePayment(payment: Payment)
+    update(long id): void
+    delete(long id)
+    get(long id): Payment
   }
 
 
   Class DbAggregator {
-   - List<Payment> payments
-   - List<Parent> debtors
+   - PaymentRepository paymentRepository
    + addPayment(payment: Payment) : void
    + calculateDebtors()
-   + gatDebtors() : List<Parent>
-  }
-
-  Interface DbAggregatorRepository{
-  }
-
-  Interface DbAggregatorService{
-  }
-
-  Class DbAggregatorServiceImpl{
   }
 
   Class DbAggregatorRepositoryImpl{
+      -db dataBase
+      savePayment(payment: Payment)
+      update(long id): void
+      delete(long id)
+      get(long id): Payment
+
   }
-
-
   Class Payment {
     - DateTime date
     - Student student
     - int amount
   }
 
+
+
+
 }
-PaymentOperator --> DbAggregator
-DbAggregator --> Notifier
-DbAggregatorRepositoryImpl .up.|> DbAggregatorRepository
-DbAggregatorServiceImpl .up.|> DbAggregatorService
 
 
-DbAggregatorRepository --> DbAggregator
-DbAggregatorServiceImpl --> DbAggregatorRepository
+DbAggregatorRepositoryImpl .up.|> PaymentRepository
 
-Notifier --> Parent
 
-StudentService --> PaymentService
 
-Admin--> HeadTeacher
-HeadTeacher --> Teacher
+PaymentRepository --> Payment
+
+
+
+StudentServiceImpl --> PaymentService
+
 Teacher *-- Group
 Group o-- Student
 Student  *-- Parent
-PaymentOperator --> Payment
 PaymentService --> Parent
-PaymentOperator --> Admin
+PaymentServiceImpl--> PaymentRepository
+
+
+'AdminServiceImpl --> PaymentOperator
 Group *-- Class
 Class --> Student
 
@@ -376,4 +388,14 @@ TeacherController --> TeacherService
 GroupController --> GroupService
 ClassController --> ClassService
 StudentController --> StudentService
+
+AdminServiceImpl --> HeadTeacherService
+HeadTeacherServiceImpl --> TeacherService
+
+AdminServiceImpl --> PaymentService
+
+HeadTeacherServiceImpl --> HeadTeacherRepository
+AdminController --> AdminService
+HeadTeacherController --> HeadTeacherService
+HeadTeacherRepository --> HeadTeacher
 @enduml
