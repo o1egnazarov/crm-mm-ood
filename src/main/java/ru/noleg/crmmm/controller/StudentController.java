@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.noleg.crmmm.controller.mapper.PaymentMapper;
 import ru.noleg.crmmm.controller.mapper.StudentMapper;
+import ru.noleg.crmmm.controller.model.PaymentDTO;
 import ru.noleg.crmmm.controller.model.StudentDTO;
+import ru.noleg.crmmm.entity.Payment;
 import ru.noleg.crmmm.entity.Student;
 import ru.noleg.crmmm.messages.GeneralMessages;
 import ru.noleg.crmmm.service.StudentService;
@@ -27,11 +30,13 @@ public class StudentController {
     private final ValidationUtils validator;
     private final StudentService studentService;
     private final StudentMapper studentMapper;
+    private final PaymentMapper paymentMapper;
 
-    public StudentController(ValidationUtils validator, StudentService studentService, StudentMapper studentMapper) {
+    public StudentController(ValidationUtils validator, StudentService studentService, StudentMapper studentMapper, PaymentMapper paymentMapper) {
         this.validator = validator;
         this.studentService = studentService;
         this.studentMapper = studentMapper;
+        this.paymentMapper = paymentMapper;
     }
 
     @PostMapping
@@ -82,7 +87,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentDTO>> getTeachers() {
+    public ResponseEntity<List<StudentDTO>> getStudents() {
         Collection<Student> students = this.studentService.getStudents();
         List<StudentDTO> studentDTOS = this.studentMapper.toDtos(students);
         return ResponseEntity
@@ -91,12 +96,28 @@ public class StudentController {
     }
 
     @GetMapping("/parents/{id}")
-    public ResponseEntity<StudentDTO> getStudentByParent(@PathVariable @Positive
+    public ResponseEntity<List<StudentDTO>> getStudentByParent(@PathVariable @Positive
             (message = GeneralMessages.NOT_VALID_ID) Long id) {
 
-        Student student = this.studentService.getStudentByParentId(id);
-        StudentDTO studentDTO = this.studentMapper.toDto(student);
-        return ResponseEntity.status(HttpStatus.OK).body(studentDTO);
+        List<Student> students = this.studentService.getStudentByParentId(id);
+        List<StudentDTO> studentDTOS = this.studentMapper.toDtos(students);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentDTOS);
 
     }
+
+    @PostMapping("/pay")
+    public ResponseEntity<PaymentDTO> pay(@RequestBody PaymentDTO paymentDTO) {
+        this.validator.validationRequest(paymentDTO);
+
+        Payment updatedPayment = this.studentService.pay(paymentDTO.getStudentId(), paymentDTO.getAmount());
+        PaymentDTO paymentDTOUpdated = this.paymentMapper.toDto(updatedPayment);
+        paymentDTOUpdated.setStudentId(paymentDTO.getStudentId());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(paymentDTOUpdated);
+    }
+
 }

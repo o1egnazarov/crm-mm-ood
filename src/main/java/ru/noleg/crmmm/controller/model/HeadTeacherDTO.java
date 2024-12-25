@@ -1,26 +1,34 @@
 package ru.noleg.crmmm.controller.model;
 
 
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import ru.noleg.crmmm.messages.GeneralMessages;
 
 
 public class HeadTeacherDTO {
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_SURNAME)
+    @Size(min = 1, max = 25)
     private String surname;
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_NAME)
+    @Size(min = 1, max = 25)
     private String name;
+
+    @Size(min = 1, max = 25)
     private String patronymic;
-    private List<TeacherDTO> teachers;
 
     public HeadTeacherDTO() {
     }
 
     public HeadTeacherDTO(String surname,
                           String name,
-                          String patronymic,
-                          List<TeacherDTO> teachers) {
+                          String patronymic
+    ) {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
-        this.teachers = teachers;
     }
 
     public String getSurname() {
@@ -45,13 +53,5 @@ public class HeadTeacherDTO {
 
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
-    }
-
-    public List<TeacherDTO> getTeachers() {
-        return teachers;
-    }
-
-    public void setTeachers(List<TeacherDTO> teachers) {
-        this.teachers = teachers;
     }
 }

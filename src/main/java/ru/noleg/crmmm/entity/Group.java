@@ -34,6 +34,14 @@ public class Group {
     public Group() {
     }
 
+    public Group(Long id, String title, List<Student> students, List<Lesson> schedule, Teacher teacher) {
+        this.id = id;
+        this.title = title;
+        this.students = students;
+        this.schedule = schedule;
+        this.teacher = teacher;
+    }
+
     public List<Lesson> addClassToSchedule(Lesson lesson) {
         this.schedule.add(lesson);
         return schedule;
