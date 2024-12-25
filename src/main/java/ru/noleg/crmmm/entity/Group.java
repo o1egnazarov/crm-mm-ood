@@ -14,11 +14,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "student_group")
+
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
@@ -32,6 +32,14 @@ public class Group {
     private Teacher teacher;
 
     public Group() {
+    }
+
+    public Group(Long id, String s, List<Student> students, List<Lesson> lessons) {
+       this.id = id;
+       this.title = s;
+       this.students = students;
+       this.schedule = lessons;
+       this.teacher = new Teacher();
     }
 
     public List<Lesson> addClassToSchedule(Lesson lesson) {

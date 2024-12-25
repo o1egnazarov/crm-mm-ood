@@ -6,6 +6,7 @@ import ru.noleg.crmmm.repository.GroupRepository;
 import ru.noleg.crmmm.service.GroupService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class GroupServiceDefaultImpl implements GroupService {
@@ -17,26 +18,38 @@ public class GroupServiceDefaultImpl implements GroupService {
 
     @Override
     public Group createGroup(Group group) {
-        return null;
+        return groupRepository.save(group);
     }
 
     @Override
     public Group getGroupById(Long id) {
-        return null;
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Group with id " + id + " not found"));
     }
 
     @Override
     public List<Group> getAllGroups() {
-        return List.of();
+        return (List<Group>) groupRepository.findAll();
     }
 
     @Override
     public Group updateGroup(Long id, Group group) {
-        return null;
+        Group existingGroup = getGroupById(id); // Проверяем, существует ли группа
+
+        // Создаем новый объект Group на основе данных из существующей группы и новых данных
+        Group updatedGroup = new Group(
+                existingGroup.getId(),
+                group.getTitle() != null ? group.getTitle() : existingGroup.getTitle(),
+                group.getStudents() != null ? group.getStudents() : existingGroup.getStudents(),
+                group.getSchedule() != null ? group.getSchedule() : existingGroup.getSchedule()
+        );
+
+        return groupRepository.save(updatedGroup);
     }
 
     @Override
     public void deleteGroup(Long id) {
-
+        Group existingGroup = getGroupById(id); // Проверяем существование группы
+        groupRepository.delete(existingGroup);
     }
 }
