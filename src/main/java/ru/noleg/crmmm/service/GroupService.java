@@ -17,4 +17,6 @@ public interface GroupService {
     Group removeStudentFromGroup(Long studentId, Long groupId);
 
     List<Student> getStudentByGroupId(Long id);
+
+    List<Group> getGroupsByTeacher(Long id);
 }

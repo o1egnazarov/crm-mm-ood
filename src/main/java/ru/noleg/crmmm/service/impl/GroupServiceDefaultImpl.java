@@ -3,11 +3,13 @@ package ru.noleg.crmmm.service.impl;
 import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Group;
 import ru.noleg.crmmm.entity.Student;
+import ru.noleg.crmmm.entity.Teacher;
 import ru.noleg.crmmm.exception.GroupNotFoundException;
 import ru.noleg.crmmm.messages.GroupMessages;
 import ru.noleg.crmmm.repository.GroupRepository;
 import ru.noleg.crmmm.service.GroupService;
 import ru.noleg.crmmm.service.StudentService;
+import ru.noleg.crmmm.service.TeacherService;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,10 +18,12 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class GroupServiceDefaultImpl implements GroupService {
+    private final TeacherService teacherService;
     private final GroupRepository groupRepository;
     private final StudentService studentService;
 
-    public GroupServiceDefaultImpl(GroupRepository groupRepository, StudentService studentService) {
+    public GroupServiceDefaultImpl(TeacherService teacherService, GroupRepository groupRepository, StudentService studentService) {
+        this.teacherService = teacherService;
         this.groupRepository = groupRepository;
         this.studentService = studentService;
     }
@@ -103,6 +107,12 @@ public class GroupServiceDefaultImpl implements GroupService {
                 .map(Group::getStudents)
                 .flatMap(Collection::stream)
                 .toList();
+    }
+
+    @Override
+    public List<Group> getGroupsByTeacher(Long id) {
+        Teacher teacher = this.teacherService.getTeacherById(id);
+        return teacher.getGroups();
     }
 
     private void mapUpdatedFields(Group existingGroup, Group updatedGroup) {

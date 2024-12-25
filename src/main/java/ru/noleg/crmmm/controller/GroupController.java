@@ -126,5 +126,18 @@ public class GroupController {
 
     }
 
+    @GetMapping("/teachers/{id}")
+    public ResponseEntity<List<GroupDTO>> getGroupsByTeacher(@PathVariable @Positive
+            (message = GeneralMessages.NOT_VALID_ID) Long id) {
+
+        List<Group> groups = this.groupService.getGroupsByTeacher(id);
+        List<GroupDTO> groupDTOS = this.groupMapper.toDtos(groups);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(groupDTOS);
+
+    }
+
 
 }
