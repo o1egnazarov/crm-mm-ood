@@ -19,7 +19,7 @@ public class TeacherDTO {
 
     @Size(min = 1, max = 25)
     private String patronymic;
-//    private List<GroupDTO> groups;
+
 
     public TeacherDTO() {
     }
