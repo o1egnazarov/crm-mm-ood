@@ -1,8 +1,10 @@
 package ru.noleg.crmmm.service;
 
+import ru.noleg.crmmm.entity.Payment;
 import ru.noleg.crmmm.entity.Student;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface StudentService {
     void createStudent(Student student);
@@ -15,7 +17,7 @@ public interface StudentService {
 
     Collection<Student> getStudents();
 
-    Student getStudentByParentId(Long id);
+    List<Student> getStudentByParentId(Long id);
 
-    void pay(Long studentId, int amount);
+    Payment pay(Long studentId, int amount);
 }

@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.noleg.crmmm.exception.ErrorDetails;
 import ru.noleg.crmmm.exception.GroupNotFoundException;
+import ru.noleg.crmmm.exception.PaymentNotFoundException;
+import ru.noleg.crmmm.exception.StudentNotFoundException;
 import ru.noleg.crmmm.exception.TeacherNotFoundException;
 import ru.noleg.crmmm.messages.GroupMessages;
 import ru.noleg.crmmm.messages.TeacherMessages;
-import ru.noleg.crmmm.utils.ValidationUtils;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -42,6 +43,18 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorDetails> exceptionGroupNotFound(ValidationException e) {
+        ErrorDetails errorDetails = new ErrorDetails();
+
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST);
+        errorDetails.setDetails(e.getMessage());
+
+        return ResponseEntity
+                .badRequest()
+                .body(errorDetails);
+    }
+
+    @ExceptionHandler({StudentNotFoundException.class, PaymentNotFoundException.class})
+    public ResponseEntity<ErrorDetails> exceptionStudentNotFound(RuntimeException e) {
         ErrorDetails errorDetails = new ErrorDetails();
 
         errorDetails.setStatus(HttpStatus.BAD_REQUEST);
