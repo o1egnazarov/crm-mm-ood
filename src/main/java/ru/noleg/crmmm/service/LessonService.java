@@ -10,5 +10,5 @@ public interface LessonService {
     Long createLesson(Lesson lesson);
     void deleteLesson(long id);
     void updateLesson(long id, Lesson lesson);
-    Map<List<Student>, Boolean> markAttendance(Long id, Map<List<Student>, Boolean> attendance);
+    Map<Student, Boolean> markAttendance(Long id, Map<Student, Boolean> attendance);
 }
