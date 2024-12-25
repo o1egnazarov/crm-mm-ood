@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.noleg.crmmm.controller.mapper.GroupMapper;
+import ru.noleg.crmmm.controller.mapper.StudentMapper;
 import ru.noleg.crmmm.controller.model.GroupDTO;
+import ru.noleg.crmmm.controller.model.StudentDTO;
 import ru.noleg.crmmm.entity.Group;
+import ru.noleg.crmmm.entity.Student;
 import ru.noleg.crmmm.messages.GeneralMessages;
 import ru.noleg.crmmm.service.GroupService;
 
@@ -26,10 +29,12 @@ public class GroupController {
 
     private final GroupService groupService;
     private final GroupMapper groupMapper;
+    private final StudentMapper studentMapper;
 
-    public GroupController(GroupService groupService, GroupMapper groupMapper) {
+    public GroupController(GroupService groupService, GroupMapper groupMapper, StudentMapper studentMapper) {
         this.groupService = groupService;
         this.groupMapper = groupMapper;
+        this.studentMapper = studentMapper;
     }
 
 
@@ -84,4 +89,42 @@ public class GroupController {
                 .status(HttpStatus.OK)
                 .body(groupDTOS);
     }
+
+    @PostMapping("/{groupId}/students/{studentId}")
+    public ResponseEntity<GroupDTO> addStudentToGroup(@PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long groupId,
+                                                      @PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long studentId) {
+
+        Group group = this.groupService.addStudentToGroup(studentId, groupId);
+        GroupDTO groupDTO = groupMapper.toDto(group);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(groupDTO);
+
+    }
+
+    @DeleteMapping("/{groupId}/students/{studentId}")
+    public ResponseEntity<GroupDTO> deleteStudentToGroup(@PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long groupId,
+                                                         @PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long studentId) {
+
+        Group group = this.groupService.removeStudentFromGroup(studentId, groupId);
+        GroupDTO groupDTO = groupMapper.toDto(group);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(groupDTO);
+
+    }
+
+    @GetMapping("/{id}/students")
+    public ResponseEntity<List<StudentDTO>> getStudentByGroup(@PathVariable @Positive
+            (message = GeneralMessages.NOT_VALID_ID) Long id) {
+
+        List<Student> students = this.groupService.getStudentByGroupId(id);
+        List<StudentDTO> studentDTOS = this.studentMapper.toDtos(students);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentDTOS);
+
+    }
+
+
 }

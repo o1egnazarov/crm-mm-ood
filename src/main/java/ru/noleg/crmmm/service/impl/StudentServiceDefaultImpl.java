@@ -12,6 +12,7 @@ import ru.noleg.crmmm.service.StudentService;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 
@@ -47,7 +48,14 @@ public class StudentServiceDefaultImpl implements StudentService {
     @Override
     public List<Student> getStudentByParentId(Long id) {
         return StreamSupport.stream(this.studentRepository.findAll().spliterator(), false)
-                .filter(student -> student.getParent() != null && student.getParent().getId() == id)
+                .filter(student -> student.getParent() != null && Objects.equals(student.getParent().getId(), id))
+                .toList();
+    }
+
+    @Override
+    public List<Student> getStudentByGroupId(Long id) {
+        return StreamSupport.stream(this.studentRepository.findAll().spliterator(), false)
+                .filter(student -> student.getGroup() != null && Objects.equals(student.getGroup().getId(), id))
                 .toList();
     }
 
@@ -66,6 +74,7 @@ public class StudentServiceDefaultImpl implements StudentService {
 
         return payment;
     }
+
 
     @Override
     public Student updateStudent(Long id, Student updatedStudent) {

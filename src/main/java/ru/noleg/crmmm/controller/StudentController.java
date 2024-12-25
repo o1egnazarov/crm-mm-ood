@@ -109,8 +109,10 @@ public class StudentController {
 
     @PostMapping("/pay")
     public ResponseEntity<PaymentDTO> pay(@RequestBody PaymentDTO paymentDTO) {
+        this.validator.validationRequest(paymentDTO);
+
         Payment updatedPayment = this.studentService.pay(paymentDTO.getStudentId(), paymentDTO.getAmount());
-        PaymentDTO paymentDTOUpdated = paymentMapper.toDto(updatedPayment);
+        PaymentDTO paymentDTOUpdated = this.paymentMapper.toDto(updatedPayment);
         paymentDTOUpdated.setStudentId(paymentDTO.getStudentId());
 
         return ResponseEntity

@@ -1,5 +1,6 @@
 package ru.noleg.crmmm.service;
 
+import jakarta.validation.constraints.Positive;
 import ru.noleg.crmmm.entity.Payment;
 import ru.noleg.crmmm.entity.Student;
 
@@ -20,4 +21,6 @@ public interface StudentService {
     List<Student> getStudentByParentId(Long id);
 
     Payment pay(Long studentId, int amount);
+
+    List<Student> getStudentByGroupId(Long id);
 }
