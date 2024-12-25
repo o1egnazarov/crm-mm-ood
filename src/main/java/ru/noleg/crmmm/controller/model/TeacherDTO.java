@@ -1,23 +1,36 @@
 package ru.noleg.crmmm.controller.model;
 
 
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import ru.noleg.crmmm.messages.GeneralMessages;
+import ru.noleg.crmmm.messages.TeacherMessages;
 
 
 public class TeacherDTO {
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_SURNAME)
+    @Size(min = 1, max = 25)
     private String surname;
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_NAME)
+    @Size(min = 1, max = 25)
     private String name;
+
+    @Size(min = 1, max = 25)
     private String patronymic;
-    private List<GroupDTO> groups;
+//    private List<GroupDTO> groups;
 
     public TeacherDTO() {
     }
 
-    public TeacherDTO(String surname, String name, String patronymic, List<GroupDTO> groups) {
+    public TeacherDTO(String surname,
+                      String name,
+                      String patronymic
+    ) {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
-        this.groups = groups;
     }
 
     public String getSurname() {
@@ -42,13 +55,5 @@ public class TeacherDTO {
 
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
-    }
-
-    public List<GroupDTO> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<GroupDTO> groups) {
-        this.groups = groups;
     }
 }

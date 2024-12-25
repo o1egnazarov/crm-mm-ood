@@ -20,9 +20,7 @@ public class Teacher {
     private Long id;
 
     private String surname;
-
     private String name;
-
     private String patronymic;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
@@ -34,6 +32,30 @@ public class Teacher {
 
     public Teacher() {
     }
+
+    public Teacher(Long id,
+                   String surname,
+                   String name,
+                   String patronymic,
+                   List<Group> groups,
+                   HeadTeacher headTeacher) {
+        this.id = id;
+        this.surname = surname;
+        this.name = name;
+        this.patronymic = patronymic;
+        this.groups = groups;
+        this.headTeacher = headTeacher;
+    }
+
+    public Teacher(Teacher updatedTeacher) {
+        this.id = updatedTeacher.id;
+        this.surname = updatedTeacher.surname;
+        this.name = updatedTeacher.name;
+        this.patronymic = updatedTeacher.patronymic;
+        this.groups = updatedTeacher.getGroups();
+        this.headTeacher = updatedTeacher.headTeacher;
+    }
+
 
     public List<Group> addGroup(Group group) {
         this.groups.add(group);
