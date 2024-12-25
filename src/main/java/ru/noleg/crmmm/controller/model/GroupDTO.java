@@ -1,18 +1,46 @@
 package ru.noleg.crmmm.controller.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import ru.noleg.crmmm.entity.LessonEntity;
-import ru.noleg.crmmm.entity.StudentEntity;
 
 import java.util.List;
 
-@Getter
-@Builder
-@AllArgsConstructor
+
 public class GroupDTO {
     private String title;
-    private List<StudentEntity> studentEntities;
-    private List<LessonEntity> schedule;
+    private List<StudentDTO> students;
+    private List<LessonDTO> schedule;
+
+    public GroupDTO() {
+    }
+
+    public GroupDTO(String title,
+                    List<StudentDTO> students,
+                    List<LessonDTO> schedule) {
+        this.title = title;
+        this.students = students;
+        this.schedule = schedule;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public List<StudentDTO> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<StudentDTO> students) {
+        this.students = students;
+    }
+
+    public List<LessonDTO> getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(List<LessonDTO> schedule) {
+        this.schedule = schedule;
+    }
 }

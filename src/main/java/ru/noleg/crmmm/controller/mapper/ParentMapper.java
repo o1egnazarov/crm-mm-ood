@@ -1,28 +1,24 @@
 package ru.noleg.crmmm.controller.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.noleg.crmmm.config.MapStructConfig;
 import ru.noleg.crmmm.controller.model.ParentDTO;
-import ru.noleg.crmmm.entity.ParentEntity;
+import ru.noleg.crmmm.entity.Parent;
 import ru.noleg.crmmm.utils.BaseMapper;
 
-import java.util.Collection;
-import java.util.List;
-
 @Mapper(config = MapStructConfig.class)
-public interface ParentMapper extends BaseMapper<ParentEntity, ParentDTO> {
+public interface ParentMapper extends BaseMapper<Parent, ParentDTO> {
     @Override
-    ParentEntity toEntity(ParentDTO parentDTO);
+    @Mapping(target = "id", ignore = true)
+    Parent toEntity(ParentDTO parentDTO);
 
     @Override
-    ParentDTO toDto(ParentEntity parentEntity);
+    ParentDTO toDto(Parent parent);
 
     @Override
-    ParentEntity updateEntity(ParentDTO parentDTO, ParentEntity parentEntity);
+    @Mapping(target = "id", ignore = true)
+    Parent updateEntity(ParentDTO parentDTO, @MappingTarget Parent parentEntity);
 
-    @Override
-    List<ParentEntity> toEntities(Collection<ParentDTO> parentDTOS);
-
-    @Override
-    List<ParentDTO> toDtos(Collection<ParentEntity> ts);
 }

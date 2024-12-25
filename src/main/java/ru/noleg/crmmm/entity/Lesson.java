@@ -1,4 +1,4 @@
-package ru.noleg.crmmm.repository.model;
+package ru.noleg.crmmm.entity;
 
 
 import jakarta.persistence.CollectionTable;
@@ -12,16 +12,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
 @Entity
-@Getter
 @Table(name = "lesson")
-@NoArgsConstructor
 public class Lesson {
 
     @Id
@@ -42,4 +38,54 @@ public class Lesson {
     @Column(name = "present")
     private Map<Student, Boolean> attendance;
 
+    public Lesson() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Map<Student, Boolean> getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(Map<Student, Boolean> attendance) {
+        this.attendance = attendance;
+    }
 }
