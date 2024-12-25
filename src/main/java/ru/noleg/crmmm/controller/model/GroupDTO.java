@@ -5,6 +5,7 @@ import java.util.List;
 
 
 public class GroupDTO {
+
     private String title;
     private List<StudentDTO> students;
     private List<LessonDTO> schedule;

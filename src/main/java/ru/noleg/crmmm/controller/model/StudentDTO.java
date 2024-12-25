@@ -1,13 +1,24 @@
 package ru.noleg.crmmm.controller.model;
 
 
-
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import ru.noleg.crmmm.messages.GeneralMessages;
+import ru.noleg.crmmm.messages.TeacherMessages;
 
 public class StudentDTO {
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_SURNAME)
+    @Size(min = 1, max = 25)
     private String surname;
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_NAME)
+    @Size(min = 1, max = 25)
     private String name;
+
+    @Size(min = 1, max = 25)
     private String patronymic;
+
     private ParentDTO parent;
 //    boolean isPaid;
 

@@ -1,12 +1,23 @@
 package ru.noleg.crmmm.controller.model;
 
 
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import ru.noleg.crmmm.messages.GeneralMessages;
+import ru.noleg.crmmm.messages.TeacherMessages;
 
 
 public class TeacherDTO {
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_SURNAME)
+    @Size(min = 1, max = 25)
     private String surname;
+
+    @NotBlank(message = GeneralMessages.NOT_BLANK_NAME)
+    @Size(min = 1, max = 25)
     private String name;
+
+    @Size(min = 1, max = 25)
     private String patronymic;
 //    private List<GroupDTO> groups;
 

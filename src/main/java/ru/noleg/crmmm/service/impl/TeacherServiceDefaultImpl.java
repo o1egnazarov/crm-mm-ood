@@ -30,7 +30,7 @@ public class TeacherServiceDefaultImpl implements TeacherService {
     public Teacher getTeacherById(Long id) {
 
         return this.teacherRepository.findById(id).orElseThrow(
-                () -> new TeacherNotFoundException(String.format(TeacherMessages.TEACHER_NOT_EXIST, id))
+                () -> new TeacherNotFoundException(String.format(TeacherMessages.TEACHER_ERROR_NOT_EXIST, id))
         );
 
     }

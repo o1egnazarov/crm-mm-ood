@@ -26,7 +26,7 @@ public class GroupServiceDefaultImpl implements GroupService {
     @Override
     public Group getGroupById(Long id) {
         return groupRepository.findById(id).orElseThrow(
-                () -> new GroupNotFoundException(String.format(GroupMessages.GROUP_NOT_EXIST, id))
+                () -> new GroupNotFoundException(String.format(GroupMessages.GROUP_ERROR_NOT_EXIST, id))
         );
     }
 

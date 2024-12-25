@@ -1,5 +1,6 @@
 package ru.noleg.crmmm.controller;
 
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.noleg.crmmm.controller.mapper.GroupMapper;
 import ru.noleg.crmmm.controller.model.GroupDTO;
 import ru.noleg.crmmm.entity.Group;
+import ru.noleg.crmmm.messages.GeneralMessages;
 import ru.noleg.crmmm.service.GroupService;
 
 import java.util.Collection;
@@ -42,7 +44,8 @@ public class GroupController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGroup(@PathVariable Long id) {
+    public ResponseEntity<?> deleteGroup(@PathVariable @Positive
+            (message = GeneralMessages.NOT_VALID_ID) Long id) {
         this.groupService.deleteGroup(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -50,8 +53,10 @@ public class GroupController {
 
     }
 
-    @PutMapping
-    public ResponseEntity<GroupDTO> updateGroup(@PathVariable Long id, @RequestBody GroupDTO groupDTO) {
+    @PutMapping("/{id}")
+    public ResponseEntity<GroupDTO> updateGroup(@PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long id,
+                                                @RequestBody GroupDTO groupDTO) {
+
         Group group = groupMapper.toEntity(groupDTO);
         Group groupUpdated = this.groupService.updateGroup(id, group);
         GroupDTO groupDtoUpdated = groupMapper.toDto(groupUpdated);
@@ -61,7 +66,8 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GroupDTO> getGroup(@PathVariable Long id) {
+    public ResponseEntity<GroupDTO> getGroup(@PathVariable @Positive
+            (message = GeneralMessages.NOT_VALID_ID) Long id) {
         Group group = this.groupService.getGroupById(id);
         GroupDTO groupDTO = groupMapper.toDto(group);
         return ResponseEntity
