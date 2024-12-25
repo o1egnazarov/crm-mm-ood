@@ -26,6 +26,14 @@ public class HeadTeacher {
     public HeadTeacher() {
     }
 
+    public HeadTeacher(Long id, String s, String s1, String s2, List<Teacher> teachers) {
+        this.id = id;
+        this.surname = s;
+        this.name = s1;
+        this.patronymic = s2;
+        this.teachers = teachers;
+    }
+
     public Long getId() {
         return id;
     }
