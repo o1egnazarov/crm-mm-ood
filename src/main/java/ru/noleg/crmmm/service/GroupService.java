@@ -1,4 +1,4 @@
 package ru.noleg.crmmm.service;
 
-public class GroupService {
+public interface GroupService {
 }

@@ -1,4 +1,7 @@
 package ru.noleg.crmmm.controller;
 
-public class ClassController {
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class LessonController {
 }

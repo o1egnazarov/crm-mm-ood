@@ -1,0 +1,13 @@
+spring:
+
+  profiles:
+    active: local
+
+  datasource:
+    username: postgres
+    password: ${db-password}
+    url: jdbc:postgresql://localhost:5432/postgres
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
