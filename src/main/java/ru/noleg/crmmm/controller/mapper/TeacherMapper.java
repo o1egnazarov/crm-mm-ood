@@ -8,6 +8,9 @@ import ru.noleg.crmmm.controller.model.TeacherDTO;
 import ru.noleg.crmmm.entity.Teacher;
 import ru.noleg.crmmm.utils.BaseMapper;
 
+import java.util.Collection;
+import java.util.List;
+
 @Mapper(config = MapStructConfig.class, uses = {GroupMapper.class})
 public interface TeacherMapper extends BaseMapper<Teacher, TeacherDTO> {
     @Override
@@ -21,4 +24,6 @@ public interface TeacherMapper extends BaseMapper<Teacher, TeacherDTO> {
     @Mapping(target = "id", ignore = true)
     Teacher updateEntity(TeacherDTO teacherDTO, @MappingTarget Teacher teacherEntity);
 
+    @Override
+    List<TeacherDTO> toDtos(Collection<Teacher> ts);
 }
