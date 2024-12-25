@@ -40,7 +40,7 @@ public class Teacher {
         return groups;
     }
 
-    public void removeGroup(Group group) {
+    public void removeGroup(Long group) {
         this.groups.remove(group);
     }
 
@@ -86,9 +86,5 @@ public class Teacher {
 
     public HeadTeacher getHeadTeacher() {
         return headTeacher;
-    }
-
-    public void setHeadTeacher(HeadTeacher headTeacher) {
-        this.headTeacher = headTeacher;
     }
 }

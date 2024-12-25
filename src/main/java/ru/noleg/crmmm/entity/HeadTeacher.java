@@ -65,4 +65,5 @@ public class HeadTeacher {
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
+
 }
