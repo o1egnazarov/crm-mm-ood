@@ -1,28 +1,23 @@
 package ru.noleg.crmmm.controller.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.noleg.crmmm.config.MapStructConfig;
 import ru.noleg.crmmm.controller.model.LessonDTO;
-import ru.noleg.crmmm.entity.LessonEntity;
+import ru.noleg.crmmm.entity.Lesson;
 import ru.noleg.crmmm.utils.BaseMapper;
 
-import java.util.Collection;
-import java.util.List;
-
-@Mapper(config = MapStructConfig.class)
-public interface LessonMapper extends BaseMapper<LessonEntity, LessonDTO> {
+@Mapper(config = MapStructConfig.class, uses = {StudentMapper.class})
+public interface LessonMapper extends BaseMapper<Lesson, LessonDTO> {
     @Override
-    LessonEntity toEntity(LessonDTO lessonDTO);
+    @Mapping(target = "id", ignore = true)
+    Lesson toEntity(LessonDTO lessonDTO);
 
     @Override
-    LessonDTO toDto(LessonEntity lessonEntity);
+    LessonDTO toDto(Lesson lesson);
 
     @Override
-    LessonEntity updateEntity(LessonDTO lessonDTO, LessonEntity lessonEntity);
-
-    @Override
-    List<LessonEntity> toEntities(Collection<LessonDTO> lessonDTOS);
-
-    @Override
-    List<LessonDTO> toDtos(Collection<LessonEntity> ts);
+    @Mapping(target = "id", ignore = true)
+    Lesson updateEntity(LessonDTO lessonDTO, @MappingTarget Lesson lessonEntity);
 }

@@ -1,17 +1,24 @@
 package ru.noleg.crmmm.controller.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.noleg.crmmm.config.MapStructConfig;
 import ru.noleg.crmmm.controller.model.HeadTeacherDTO;
-import ru.noleg.crmmm.entity.HeadTeacherEntity;
+import ru.noleg.crmmm.entity.HeadTeacher;
 import ru.noleg.crmmm.utils.BaseMapper;
 
-@Mapper(config = MapStructConfig.class)
-public interface HeadTeacherMapper extends BaseMapper<HeadTeacherEntity, HeadTeacherDTO> {
+@Mapper(config = MapStructConfig.class, uses = {TeacherMapper.class})
+public interface HeadTeacherMapper extends BaseMapper<HeadTeacher, HeadTeacherDTO> {
     @Override
-    HeadTeacherEntity toEntity(HeadTeacherDTO headTeacherDTO);
+    @Mapping(target = "id", ignore = true)
+    HeadTeacher toEntity(HeadTeacherDTO headTeacherDTO);
 
     @Override
-    HeadTeacherEntity updateEntity(HeadTeacherDTO headTeacherDTO, HeadTeacherEntity headTeacherEntity);
+    HeadTeacherDTO toDto(HeadTeacher headTeacher);
+
+    @Override
+    @Mapping(target = "id", ignore = true)
+    HeadTeacher updateEntity(HeadTeacherDTO headTeacherDTO, @MappingTarget HeadTeacher headTeacher);
 
 }

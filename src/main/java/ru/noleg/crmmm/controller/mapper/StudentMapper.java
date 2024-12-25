@@ -1,28 +1,25 @@
 package ru.noleg.crmmm.controller.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.noleg.crmmm.config.MapStructConfig;
 import ru.noleg.crmmm.controller.model.StudentDTO;
-import ru.noleg.crmmm.entity.StudentEntity;
+import ru.noleg.crmmm.entity.Student;
 import ru.noleg.crmmm.utils.BaseMapper;
 
-import java.util.Collection;
-import java.util.List;
-
-@Mapper(config = MapStructConfig.class)
-public interface StudentMapper extends BaseMapper<StudentEntity, StudentDTO> {
+@Mapper(config = MapStructConfig.class, uses = ParentMapper.class)
+public interface StudentMapper extends BaseMapper<Student, StudentDTO> {
     @Override
-    StudentEntity toEntity(StudentDTO studentDTO);
+    @Mapping(target = "id", ignore = true)
 
-    @Override
-    StudentDTO toDto(StudentEntity studentEntity);
+    Student toEntity(StudentDTO studentDTO);
 
     @Override
-    StudentEntity updateEntity(StudentDTO studentDTO, StudentEntity studentEntity);
+    StudentDTO toDto(Student student);
 
     @Override
-    List<StudentEntity> toEntities(Collection<StudentDTO> studentDTOS);
+    @Mapping(target = "id", ignore = true)
+    Student updateEntity(StudentDTO studentDTO, @MappingTarget Student studentEntity);
 
-    @Override
-    List<StudentDTO> toDtos(Collection<StudentEntity> ts);
 }
