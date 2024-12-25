@@ -2,6 +2,7 @@ package ru.noleg.crmmm.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Group;
+import ru.noleg.crmmm.entity.Student;
 import ru.noleg.crmmm.repository.GroupRepository;
 import ru.noleg.crmmm.service.GroupService;
 
@@ -51,5 +52,45 @@ public class GroupServiceDefaultImpl implements GroupService {
     public void deleteGroup(Long id) {
         Group existingGroup = getGroupById(id); // Проверяем существование группы
         groupRepository.delete(existingGroup);
+    }
+
+    @Override
+    public void addStudentToGroup(Student student, Long groupId) {
+        Group group = getGroupById(groupId); // Проверяем существование группы
+
+        // Добавляем студента в группу
+        List<Student> students = group.getStudents();
+        if (!students.contains(student)) { // Проверяем, чтобы не добавлять дубликаты
+            students.add(student);
+        }
+
+        // Сохраняем изменения
+        Group updatedGroup = new Group(
+                group.getId(),
+                group.getTitle(),
+                students,
+                group.getSchedule()
+        );
+        groupRepository.save(updatedGroup);
+    }
+
+    @Override
+    public void removeStudentFromGroup(Student student, Long groupId) {
+        Group group = getGroupById(groupId); // Проверяем существование группы
+
+        // Удаляем студента из группы
+        List<Student> students = group.getStudents();
+        if (students.contains(student)) {
+            students.remove(student);
+        }
+
+        // Сохраняем изменения
+        Group updatedGroup = new Group(
+                group.getId(),
+                group.getTitle(),
+                students,
+                group.getSchedule()
+        );
+        groupRepository.save(updatedGroup);
     }
 }
