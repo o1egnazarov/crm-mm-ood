@@ -1,7 +1,7 @@
 package ru.noleg.crmmm.service;
 
-import ru.noleg.crmmm.entity.TeacherEntity;
+import ru.noleg.crmmm.entity.Teacher;
 
 public interface TeacherService {
-    TeacherEntity createTeacher(TeacherEntity teacher);
+    Teacher createTeacher(Teacher teacher);
 }

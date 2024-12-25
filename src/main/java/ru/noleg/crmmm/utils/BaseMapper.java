@@ -10,7 +10,7 @@ public interface BaseMapper<E, T> {
 
     T toDto(E e);
 
-    E updateEntity(T t, @MappingTarget E e);
+     E updateEntity(T t, @MappingTarget E e);
 
     List<E> toEntities(Collection<T> ts);
 
