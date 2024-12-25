@@ -12,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +40,6 @@ public class Lesson {
     @CollectionTable(name = "lesson_attendance", joinColumns = @JoinColumn(name = "lesson_id"))
     @MapKeyJoinColumn(name = "student_id")
     @Column(name = "present")
-    private Map<Student,Boolean> attendance;
+    private Map<Student, Boolean> attendance;
 
 }

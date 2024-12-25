@@ -1,17 +1,17 @@
-package ru.noleg.crmmm.entity;
+package ru.noleg.crmmm.controller.model;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
+
+import java.util.List;
 
 @Getter
-@ToString
-@EqualsAndHashCode
+@Builder
 @AllArgsConstructor
-public class Parent {
+public class TeacherDTO {
     private String surname;
     private String name;
     private String patronymic;
-    private String email;
+    private List<GroupDTO> groupEntities;
 }

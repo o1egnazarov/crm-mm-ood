@@ -1,18 +1,18 @@
 package ru.noleg.crmmm.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
+@Builder
 @EqualsAndHashCode
 @AllArgsConstructor
-public class Payment {
+public class PaymentEntity {
     private LocalDateTime paymentDateTime;
-    private Student student;
+    private StudentEntity studentEntity;
     private int amount;
 }
