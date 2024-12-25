@@ -52,8 +52,12 @@ public class StudentServiceDefaultImpl implements StudentService {
         Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
 
         existingStudent.setName(updatedStudent.getName());
+        existingStudent.setSurname(updatedStudent.getSurname());
+        existingStudent.setPatronymic(updatedStudent.getPatronymic());
         existingStudent.setParent(updatedStudent.getParent());
-
+        existingStudent.setGroup(updatedStudent.getGroup());
+        existingStudent.setPayment(updatedStudent.getPayment());
+        existingStudent.setPaid(updatedStudent.isPaid());
         return studentRepository.save(existingStudent);
     }
     @Override
