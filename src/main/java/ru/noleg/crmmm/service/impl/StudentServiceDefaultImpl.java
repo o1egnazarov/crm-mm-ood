@@ -40,4 +40,27 @@ public class StudentServiceDefaultImpl implements StudentService {
         // Возврат нового объекта Payment
         return payment;
     }
+
+    @Override
+    public Student createStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    @Override
+    public Student updateStudent(long id, Student updatedStudent) {
+        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // Update the student's information
+        existingStudent.setName(updatedStudent.getName());
+        existingStudent.setParent(updatedStudent.getParent());
+        // Add other fields as needed
+
+        return studentRepository.save(existingStudent);
+    }
+    @Override
+    public void deleteStudent(long id) {
+        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        studentRepository.delete(existingStudent);
+    }
+
 }

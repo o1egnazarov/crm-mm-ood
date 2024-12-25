@@ -8,4 +8,10 @@ import java.util.List;
 public interface StudentService {
     List<Student> findByParent(long id);
     Payment pay(Student student, int amount);
+
+    Student createStudent(Student student);
+
+    Student updateStudent(long id, Student updatedStudent);
+
+    void deleteStudent(long id);
 }

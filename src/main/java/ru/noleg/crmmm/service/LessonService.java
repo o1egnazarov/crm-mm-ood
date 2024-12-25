@@ -11,4 +11,7 @@ public interface LessonService {
     void deleteLesson(long id);
     void updateLesson(long id, Lesson lesson);
     Map<Student, Boolean> markAttendance(Long id, Map<Student, Boolean> attendance);
+
+    List<Lesson> getLessonsByGroup(Long groupId);
+
 }

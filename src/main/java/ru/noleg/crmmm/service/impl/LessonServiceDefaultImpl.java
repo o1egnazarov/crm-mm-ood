@@ -5,6 +5,8 @@ import ru.noleg.crmmm.entity.Lesson;
 import ru.noleg.crmmm.entity.Student;
 import ru.noleg.crmmm.repository.LessonRepository;
 import ru.noleg.crmmm.service.LessonService;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -78,5 +80,9 @@ public class LessonServiceDefaultImpl implements LessonService {
         } else {
             throw new IllegalArgumentException("Lesson with id " + id + " not found.");
         }
+    }
+    @Override
+    public List<Lesson> getLessonsByGroup(Long groupId){
+        return lessonRepository.getLessonsBygroupId(groupId);
     }
 }
