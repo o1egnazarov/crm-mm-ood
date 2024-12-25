@@ -41,6 +41,20 @@ public class Lesson {
     public Lesson() {
     }
 
+    public Lesson(Long id,
+                  String title,
+                  LocalDateTime startDateTime,
+                  LocalDateTime endDateTime,
+                  Group group,
+                  Map<Student, Boolean> attendance) {
+        this.id = id;
+        this.title = title;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.group = group;
+        this.attendance = attendance;
+    }
+
     public Long getId() {
         return id;
     }
