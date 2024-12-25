@@ -5,4 +5,5 @@ import ru.noleg.crmmm.service.AdminService;
 
 @Service
 public class AdminServiceDefaultImpl implements AdminService {
+
 }
