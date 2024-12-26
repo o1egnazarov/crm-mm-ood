@@ -40,15 +40,15 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestBody StudentDTO studentDTO) {
+    public ResponseEntity<Long> createStudent(@RequestBody StudentDTO studentDTO) {
         this.validator.validationRequest(studentDTO);
 
         Student student = studentMapper.toEntity(studentDTO);
-        this.studentService.createStudent(student);
+        Long id = this.studentService.createStudent(student);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(id);
     }
 
     @PutMapping("/{id}")
@@ -113,7 +113,7 @@ public class StudentController {
 
         Payment updatedPayment = this.studentService.pay(paymentDTO.getStudentId(), paymentDTO.getAmount());
         PaymentDTO paymentDTOUpdated = this.paymentMapper.toDto(updatedPayment);
-        paymentDTOUpdated.setStudentId(paymentDTO.getStudentId());
+        paymentDTOUpdated.setStudentId(updatedPayment.getStudent().getId());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

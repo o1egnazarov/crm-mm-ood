@@ -25,8 +25,8 @@ public class HeadTeacherServiceDefaultImpl implements HeadTeacherService {
     }
 
     @Override
-    public void createHeadTeacher(HeadTeacher headTeacher) {
-        headTeacherRepository.save(headTeacher);
+    public Long createHeadTeacher(HeadTeacher headTeacher) {
+        return headTeacherRepository.save(headTeacher).getId();
     }
 
     @Override

@@ -5,7 +5,7 @@ import ru.noleg.crmmm.entity.HeadTeacher;
 import ru.noleg.crmmm.entity.Teacher;
 
 public interface HeadTeacherService {
-    void createHeadTeacher(HeadTeacher headTeacher);
+    Long createHeadTeacher(HeadTeacher headTeacher);
 
     HeadTeacher updateHeadTeacher(Long id, HeadTeacher headTeacher);
 

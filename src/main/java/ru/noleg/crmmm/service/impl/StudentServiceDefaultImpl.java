@@ -27,8 +27,9 @@ public class StudentServiceDefaultImpl implements StudentService {
     }
 
     @Override
-    public void createStudent(Student student) {
-        this.studentRepository.save(student);
+    public Long createStudent(Student student) {
+        Student createdStudent = this.studentRepository.save(student);
+        return createdStudent.getId();
     }
 
     @Override
@@ -63,16 +64,22 @@ public class StudentServiceDefaultImpl implements StudentService {
     public Payment pay(Long id, int amount) {
         Student student = this.getStudentById(id);
         if (student.isPaid()) {
-            return new Payment(student.getPayment().getPaymentDateTime(), student, student.getPayment().getAmount());
+
+            return new Payment(
+                    student.getPayment().getId(),
+                    student.getPayment().getPaymentDateTime(),
+                    student,
+                    student.getPayment().getAmount());
+
         }
 
         Payment payment = new Payment(LocalDateTime.now(), student, amount);
 
-        this.paymentService.acceptPayment(payment);
+        Payment savePayment =  this.paymentService.acceptPayment(payment);
         student.setPaid(true);
         this.studentRepository.save(student);
 
-        return payment;
+        return savePayment;
     }
 
 

@@ -23,8 +23,9 @@ public class LessonServiceDefaultImpl implements LessonService {
     }
 
     @Override
-    public void createLesson(Lesson lesson) {
-        lessonRepository.save(lesson);
+    public Long createLesson(Lesson lesson) {
+        Lesson createdLesson = lessonRepository.save(lesson);
+        return createdLesson.getId();
     }
 
     @Override

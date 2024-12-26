@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface StudentService {
-    void createStudent(Student student);
+    Long createStudent(Student student);
 
     Student updateStudent(Long id, Student student);
 
