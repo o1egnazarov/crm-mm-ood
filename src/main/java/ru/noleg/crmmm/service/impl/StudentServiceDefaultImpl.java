@@ -3,14 +3,18 @@ package ru.noleg.crmmm.service.impl;
 import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Payment;
 import ru.noleg.crmmm.entity.Student;
+import ru.noleg.crmmm.exception.StudentNotFoundException;
+import ru.noleg.crmmm.messages.StudentMessages;
 import ru.noleg.crmmm.repository.StudentRepository;
 import ru.noleg.crmmm.service.PaymentService;
 import ru.noleg.crmmm.service.StudentService;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
+
 
 @Service
 public class StudentServiceDefaultImpl implements StudentService {
@@ -23,48 +27,74 @@ public class StudentServiceDefaultImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getStudentByParentId(long id) {
-        // Получение студентов по id родителя
-        return StreamSupport.stream(studentRepository.findAll().spliterator(), false)
-                .filter(student -> student.getParent() != null && student.getParent().getId() == id)
-                .collect(Collectors.toList());
+    public Long createStudent(Student student) {
+        Student createdStudent = this.studentRepository.save(student);
+        return createdStudent.getId();
     }
 
     @Override
-    public Payment pay(Student student, int amount) {
-        // Создание нового объекта Payment
-        Payment payment = new Payment(student, amount, true);
-
-        // Обработка платежа через PaymentService
-        paymentService.acceptPayment(payment);
-
-        // Возврат нового объекта Payment
-        return payment;
+    public Student getStudentById(Long id) {
+        return this.studentRepository.findById(id).orElseThrow(
+                () -> new StudentNotFoundException(String.format(StudentMessages.STUDENT_ERROR_NOT_EXIST, id))
+        );
     }
 
     @Override
-    public Student createStudent(Student student) {
-        return studentRepository.save(student);
+    public void deleteStudent(Long id) {
+        Student student = this.getStudentById(id);
+        studentRepository.delete(student);
+    }
+
+
+    @Override
+    public List<Student> getStudentByParentId(Long id) {
+        return StreamSupport.stream(this.studentRepository.findAll().spliterator(), false)
+                .filter(student -> student.getParent() != null && Objects.equals(student.getParent().getId(), id))
+                .toList();
     }
 
     @Override
-    public Student updateStudent(long id, Student updatedStudent) {
-        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+    public List<Student> getStudentByGroupId(Long id) {
+        return StreamSupport.stream(this.studentRepository.findAll().spliterator(), false)
+                .filter(student -> student.getGroup() != null && Objects.equals(student.getGroup().getId(), id))
+                .toList();
+    }
+
+    @Override
+    public Payment pay(Long id, int amount) {
+        Student student = this.getStudentById(id);
+        if (student.isPaid()) {
+
+            return new Payment(
+                    student.getPayment().getId(),
+                    student.getPayment().getPaymentDateTime(),
+                    student,
+                    student.getPayment().getAmount());
+
+        }
+
+        Payment payment = new Payment(LocalDateTime.now(), student, amount);
+
+        Payment savePayment =  this.paymentService.acceptPayment(payment);
+        student.setPaid(true);
+        this.studentRepository.save(student);
+
+        return savePayment;
+    }
+
+
+    @Override
+    public Student updateStudent(Long id, Student updatedStudent) {
+        Student existingStudent = this.getStudentById(id);
 
         existingStudent.setName(updatedStudent.getName());
+        existingStudent.setParent(updatedStudent.getParent());
         existingStudent.setSurname(updatedStudent.getSurname());
         existingStudent.setPatronymic(updatedStudent.getPatronymic());
-        existingStudent.setParent(updatedStudent.getParent());
-        existingStudent.setGroup(updatedStudent.getGroup());
-        existingStudent.setPayment(updatedStudent.getPayment());
-        existingStudent.setPaid(updatedStudent.isPaid());
+
         return studentRepository.save(existingStudent);
     }
-    @Override
-    public void deleteStudent(long id) {
-        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
-        studentRepository.delete(existingStudent);
-    }
+
 
     @Override
     public Collection<Student> getStudents() {

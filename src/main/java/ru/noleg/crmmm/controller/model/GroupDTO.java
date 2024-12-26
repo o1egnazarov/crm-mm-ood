@@ -1,13 +1,18 @@
 package ru.noleg.crmmm.controller.model;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import ru.noleg.crmmm.messages.GeneralMessages;
+
 import java.util.List;
 
 
 public class GroupDTO {
+
+    @NotBlank(message = "Название группы обязательно")
+    @Size(min = 1, max = 25)
     private String title;
-    private List<StudentDTO> students;
-    private List<LessonDTO> schedule;
 
     public GroupDTO() {
     }
@@ -16,8 +21,6 @@ public class GroupDTO {
                     List<StudentDTO> students,
                     List<LessonDTO> schedule) {
         this.title = title;
-        this.students = students;
-        this.schedule = schedule;
     }
 
     public String getTitle() {
@@ -28,19 +31,4 @@ public class GroupDTO {
         this.title = title;
     }
 
-    public List<StudentDTO> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<StudentDTO> students) {
-        this.students = students;
-    }
-
-    public List<LessonDTO> getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(List<LessonDTO> schedule) {
-        this.schedule = schedule;
-    }
 }

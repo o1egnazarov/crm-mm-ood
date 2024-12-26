@@ -3,94 +3,133 @@ package ru.noleg.crmmm.service.impl;
 import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Group;
 import ru.noleg.crmmm.entity.Student;
+import ru.noleg.crmmm.entity.Teacher;
+import ru.noleg.crmmm.exception.GroupNotFoundException;
+import ru.noleg.crmmm.messages.GroupMessages;
 import ru.noleg.crmmm.repository.GroupRepository;
 import ru.noleg.crmmm.service.GroupService;
+import ru.noleg.crmmm.service.StudentService;
+import ru.noleg.crmmm.service.TeacherService;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 @Service
 public class GroupServiceDefaultImpl implements GroupService {
+    private final TeacherService teacherService;
     private final GroupRepository groupRepository;
+    private final StudentService studentService;
 
-    public GroupServiceDefaultImpl(GroupRepository groupRepository) {
+    public GroupServiceDefaultImpl(TeacherService teacherService, GroupRepository groupRepository, StudentService studentService) {
+        this.teacherService = teacherService;
         this.groupRepository = groupRepository;
+        this.studentService = studentService;
     }
 
     @Override
-    public Group createGroup(Group group) {
-        return groupRepository.save(group);
+    public void createGroup(Group group) {
+        this.groupRepository.save(group);
     }
 
     @Override
     public Group getGroupById(Long id) {
-        return groupRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Group with id " + id + " not found"));
-    }
-
-    @Override
-    public List<Group> getAllGroups() {
-        return (List<Group>) groupRepository.findAll();
-    }
-
-    @Override
-    public Group updateGroup(Long id, Group group) {
-        Group existingGroup = getGroupById(id); // Проверяем, существует ли группа
-
-        // Создаем новый объект Group на основе данных из существующей группы и новых данных
-        Group updatedGroup = new Group(
-                existingGroup.getId(),
-                group.getTitle() != null ? group.getTitle() : existingGroup.getTitle(),
-                group.getStudents() != null ? group.getStudents() : existingGroup.getStudents(),
-                group.getSchedule() != null ? group.getSchedule() : existingGroup.getSchedule()
+        return groupRepository.findById(id).orElseThrow(
+                () -> new GroupNotFoundException(String.format(GroupMessages.GROUP_ERROR_NOT_EXIST, id))
         );
-
-        return groupRepository.save(updatedGroup);
     }
 
     @Override
     public void deleteGroup(Long id) {
-        Group existingGroup = getGroupById(id); // Проверяем существование группы
+        Group existingGroup = getGroupById(id);
         groupRepository.delete(existingGroup);
     }
 
     @Override
-    public void addStudentToGroup(Student student, Long groupId) {
-        Group group = getGroupById(groupId); // Проверяем существование группы
+    public Group updateGroup(Long id, Group updatedGroup) {
+        Group existingGroup = getGroupById(id);
+        mapUpdatedFields(existingGroup, updatedGroup);
 
-        // Добавляем студента в группу
-        List<Student> students = group.getStudents();
-        if (!students.contains(student)) { // Проверяем, чтобы не добавлять дубликаты
-            students.add(student);
-        }
-
-        // Сохраняем изменения
-        Group updatedGroup = new Group(
-                group.getId(),
-                group.getTitle(),
-                students,
-                group.getSchedule()
-        );
-        groupRepository.save(updatedGroup);
+        return groupRepository.save(existingGroup);
     }
 
     @Override
-    public void removeStudentFromGroup(Student student, Long groupId) {
-        Group group = getGroupById(groupId); // Проверяем существование группы
+    public Group addStudentToGroup(Long studentId, Long groupId) {
+        Group group = getGroupById(groupId);
+        Student student = this.studentService.getStudentById(studentId);
 
-        // Удаляем студента из группы
         List<Student> students = group.getStudents();
-        if (students.contains(student)) {
-            students.remove(student);
+        if (!students.contains(student)) {
+            students.add(student);
+            student.setGroup(group);
         }
+
+
+        Group updatedGroup = new Group(
+                group.getId(),
+                group.getTitle(),
+                students,
+                group.getSchedule(),
+                group.getTeacher()
+        );
+        studentService.updateStudent(studentId, student);
+        groupRepository.save(updatedGroup);
+
+        return updatedGroup;
+    }
+
+    @Override
+    public Group removeStudentFromGroup(Long studentId, Long groupId) {
+        Group group = getGroupById(groupId);
+        Student student = this.studentService.getStudentById(studentId);
+
+        List<Student> students = group.getStudents();
+        students.remove(student);
+        student.setGroup(null);
 
         // Сохраняем изменения
         Group updatedGroup = new Group(
                 group.getId(),
                 group.getTitle(),
                 students,
-                group.getSchedule()
+                group.getSchedule(),
+                group.getTeacher()
         );
         groupRepository.save(updatedGroup);
+        return updatedGroup;
     }
+
+    @Override
+    public List<Student> getStudentByGroupId(Long id) {
+        return StreamSupport.stream(this.groupRepository.findAll().spliterator(), false)
+                .filter(group -> group.getId() != null && Objects.equals(group.getId(), id))
+                .map(Group::getStudents)
+                .flatMap(Collection::stream)
+                .toList();
+    }
+
+    @Override
+    public List<Group> getGroupsByTeacher(Long id) {
+        Teacher teacher = this.teacherService.getTeacherById(id);
+        return teacher.getGroups();
+    }
+
+    private void mapUpdatedFields(Group existingGroup, Group updatedGroup) {
+        existingGroup.setTitle(updatedGroup.getTitle());
+        existingGroup.setTeacher(updatedGroup.getTeacher());
+
+        existingGroup.getStudents().clear();
+        existingGroup.getStudents().addAll(updatedGroup.getStudents());
+
+        existingGroup.getSchedule().clear();
+        existingGroup.getSchedule().addAll(updatedGroup.getSchedule());
+    }
+
+    @Override
+    public Collection<Group> getGroups() {
+        return (List<Group>) groupRepository.findAll();
+    }
+
+
 }

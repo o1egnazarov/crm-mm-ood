@@ -1,5 +1,6 @@
 package ru.noleg.crmmm.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,7 @@ public class Student {
     private String surname;
     private String name;
     private String patronymic;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     private Parent parent;
     @ManyToOne

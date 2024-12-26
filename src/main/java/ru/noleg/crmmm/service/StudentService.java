@@ -1,20 +1,26 @@
 package ru.noleg.crmmm.service;
 
-import org.springframework.stereotype.Service;
+import jakarta.validation.constraints.Positive;
 import ru.noleg.crmmm.entity.Payment;
 import ru.noleg.crmmm.entity.Student;
 
 import java.util.Collection;
 import java.util.List;
-@Service
+
 public interface StudentService {
-    Collection<Student> getStudentByParentId(long id);
-    Payment pay(Student student, int amount);
+    Long createStudent(Student student);
 
-    Student createStudent(Student student);
+    Student updateStudent(Long id, Student student);
 
-    Student updateStudent(long id, Student updatedStudent);
+    void deleteStudent(Long id);
 
-    void deleteStudent(long id);
+    Student getStudentById(Long id);
+
     Collection<Student> getStudents();
+
+    List<Student> getStudentByParentId(Long id);
+
+    Payment pay(Long studentId, int amount);
+
+    List<Student> getStudentByGroupId(Long id);
 }

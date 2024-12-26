@@ -1,20 +1,22 @@
 package ru.noleg.crmmm.service;
 
-import org.springframework.stereotype.Service;
+import jakarta.validation.constraints.Positive;
 import ru.noleg.crmmm.entity.Group;
 import ru.noleg.crmmm.entity.Student;
 
-
+import java.util.Collection;
 import java.util.List;
-@Service
+
 public interface GroupService {
-    Group createGroup(Group group);
-    Group getGroupById(Long id);
-    List<Group> getAllGroups();
-    Group updateGroup(Long id, Group group);
+    void createGroup(Group group);
     void deleteGroup(Long id);
+    Group getGroupById(Long id);
+    Collection<Group> getGroups();
+    Group updateGroup(Long id, Group group);
+    Group addStudentToGroup(Long studentId, Long groupId);
+    Group removeStudentFromGroup(Long studentId, Long groupId);
 
-    void addStudentToGroup(Student student, Long groupId);
+    List<Student> getStudentByGroupId(Long id);
 
-    void removeStudentFromGroup(Student student, Long groupId);
+    List<Group> getGroupsByTeacher(Long id);
 }

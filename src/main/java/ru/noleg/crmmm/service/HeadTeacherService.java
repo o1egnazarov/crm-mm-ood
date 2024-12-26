@@ -1,15 +1,19 @@
 package ru.noleg.crmmm.service;
 
-import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Group;
 import ru.noleg.crmmm.entity.HeadTeacher;
 import ru.noleg.crmmm.entity.Teacher;
-@Service
+
 public interface HeadTeacherService {
-    void createHeadTeacher(HeadTeacher headTeacher);
+    Long createHeadTeacher(HeadTeacher headTeacher);
+
+    HeadTeacher updateHeadTeacher(Long id, HeadTeacher headTeacher);
+
     void deleteHeadTeacher(Long id);
+
     HeadTeacher getHeadTeacherById(Long id);
-    public HeadTeacher updateHeadTeacher(Long id, HeadTeacher headTeacher);
-    void removeGroupFromTeacher(Teacher teacher, Long groupId);
-    void assignTeacherToGroup(Teacher teacher, Group group);
-    }
+
+    Teacher assignTeacherToGroup(Long teacherId, Long groupId);
+
+    Teacher removeGroupFromTeacher(Long teacherId, Long groupId);
+}

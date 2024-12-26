@@ -3,86 +3,79 @@ package ru.noleg.crmmm.service.impl;
 import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Lesson;
 import ru.noleg.crmmm.entity.Student;
+import ru.noleg.crmmm.exception.LessonNotFoundException;
+import ru.noleg.crmmm.messages.LessonMessages;
 import ru.noleg.crmmm.repository.LessonRepository;
 import ru.noleg.crmmm.service.LessonService;
+import ru.noleg.crmmm.service.TeacherService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class LessonServiceDefaultImpl implements LessonService {
     private final LessonRepository lessonRepository;
+    private final TeacherService teacherService;
 
-    public LessonServiceDefaultImpl(LessonRepository lessonRepository) {
+    public LessonServiceDefaultImpl(LessonRepository lessonRepository, TeacherService teacherService) {
         this.lessonRepository = lessonRepository;
+        this.teacherService = teacherService;
     }
 
     @Override
     public Long createLesson(Lesson lesson) {
-        // Сохраняем новый урок в базу данных
-        Lesson savedLesson = lessonRepository.save(lesson);
-        return savedLesson.getId();
+        Lesson createdLesson = lessonRepository.save(lesson);
+        return createdLesson.getId();
     }
 
     @Override
-    public void deleteLesson(long id) {
-        // Удаляем урок по ID
-        lessonRepository.deleteById(id);
+    public Lesson getLessonById(Long id) {
+        return this.lessonRepository.findById(id).orElseThrow(
+                () -> new LessonNotFoundException(String.format(LessonMessages.LESSON_ERROR_NOT_EXIST, id))
+        );
     }
 
     @Override
-    public void updateLesson(long id, Lesson updatedLesson) {
-        // Ищем существующий урок
-        Optional<Lesson> existingLesson = lessonRepository.findById(id);
-        if (existingLesson.isPresent()) {
-            Lesson lesson = existingLesson.get();
-
-            // Создаем новый объект Lesson с обновленными данными
-            Lesson newLesson = new Lesson(
-                    lesson.getId(),          // ID остается неизменным
-                    updatedLesson.getTitle(), // Новое имя
-                    updatedLesson.getStartDateTime(),
-                    updatedLesson.getEndDateTime(), // Новая дата
-                    updatedLesson.getGroup(),
-                    updatedLesson.getAttendance() // Новая карта посещаемости
-            );
-
-            // Сохраняем новый объект
-            lessonRepository.save(newLesson);
-        } else {
-            throw new IllegalArgumentException("Lesson with id " + id + " not found.");
-        }
+    public void deleteLesson(Long id) {
+        Lesson lesson = this.getLessonById(id);
+        lessonRepository.delete(lesson);
     }
 
     @Override
+    public Lesson updateLesson(Long id, Lesson lesson) {
+        Lesson existingLesson = this.getLessonById(id);
+
+        existingLesson.setTitle(lesson.getTitle());
+        existingLesson.setStartDateTime(lesson.getStartDateTime());
+        existingLesson.setEndDateTime(lesson.getEndDateTime());
+        existingLesson.setAttendance(lesson.getAttendance());
+        existingLesson.setGroup(lesson.getGroup());
+
+        return this.lessonRepository.save(existingLesson);
+    }
+
     public Map<Student, Boolean> markAttendance(Long id, Map<Student, Boolean> attendance) {
-        // Ищем урок по ID
-        Optional<Lesson> optionalLesson = lessonRepository.findById(id);
 
-        if (optionalLesson.isPresent()) {
-            Lesson lesson = optionalLesson.get();
+        Lesson lesson = this.getLessonById(id);
 
-            // Обновляем карту посещаемости путем создания нового объекта Lesson
-            Lesson updatedLesson = new Lesson(
-                    lesson.getId(),
-                    lesson.getTitle(),
-                    lesson.getStartDateTime(),
-                    lesson.getEndDateTime(),
-                    lesson.getGroup(),
-                    attendance // Устанавливаем новую карту посещаемости
-            );
+        Lesson updatedLesson = new Lesson(
+                lesson.getId(),
+                lesson.getTitle(),
+                lesson.getStartDateTime(),
+                lesson.getEndDateTime(),
+                lesson.getGroup(),
+                attendance
+        );
 
-            // Сохраняем обновленный урок
-            lessonRepository.save(updatedLesson);
+        lessonRepository.save(updatedLesson);
 
-            return attendance;
-        } else {
-            throw new IllegalArgumentException("Lesson with id " + id + " not found.");
-        }
+        return attendance;
+
     }
+
+
     @Override
-    public List<Lesson> getLessonsByGroup(Long groupId){
-        return lessonRepository.getLessonsBygroupId(groupId);
+    public List<Lesson> getLessonsByTeacherId(Long teacherId) {
+        return this.teacherService.getLessonsByTeacherId(teacherId);
     }
 }

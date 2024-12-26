@@ -4,26 +4,45 @@ import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Group;
 import ru.noleg.crmmm.entity.HeadTeacher;
 import ru.noleg.crmmm.entity.Teacher;
+import ru.noleg.crmmm.exception.HeadTeacherNotFoundException;
 import ru.noleg.crmmm.repository.HeadTeacherRepository;
-import ru.noleg.crmmm.repository.TeacherRepository;
+import ru.noleg.crmmm.service.GroupService;
 import ru.noleg.crmmm.service.HeadTeacherService;
+import ru.noleg.crmmm.service.TeacherService;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 
 @Service
 public class HeadTeacherServiceDefaultImpl implements HeadTeacherService {
-    private HeadTeacherRepository headTeacherRepository;
-    private TeacherRepository teacherRepository;
+    private final HeadTeacherRepository headTeacherRepository;
+    private final TeacherService teacherService;
+    private final GroupService groupService;
 
-    public void HeadTeacherServiceImpl(HeadTeacherRepository headTeacherRepository) {
+    public HeadTeacherServiceDefaultImpl(HeadTeacherRepository headTeacherRepository, TeacherService teacherService, GroupService groupService) {
         this.headTeacherRepository = headTeacherRepository;
+        this.teacherService = teacherService;
+        this.groupService = groupService;
     }
 
     @Override
-    public void createHeadTeacher(HeadTeacher headTeacher) {
-        headTeacherRepository.save(headTeacher);
+    public Long createHeadTeacher(HeadTeacher headTeacher) {
+        return headTeacherRepository.save(headTeacher).getId();
     }
 
+    @Override
+    public HeadTeacher updateHeadTeacher(Long id, HeadTeacher headTeacher) {
+        HeadTeacher existingHeadTeacher = this.getHeadTeacherById(id);
+
+        HeadTeacher updatedHeadTeacher = new HeadTeacher(
+                existingHeadTeacher.getId(),
+                headTeacher.getName(),
+                headTeacher.getSurname(),
+                headTeacher.getPatronymic(),
+                headTeacher.getTeachers()
+        );
+
+        return headTeacherRepository.save(updatedHeadTeacher);
+    }
 
     @Override
     public void deleteHeadTeacher(Long id) {
@@ -34,38 +53,38 @@ public class HeadTeacherServiceDefaultImpl implements HeadTeacherService {
     @Override
     public HeadTeacher getHeadTeacherById(Long id) {
         return headTeacherRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("HeadTeacher with id " + id + " not found"));
+                .orElseThrow(() -> new HeadTeacherNotFoundException("HeadTeacher with id " + id + " not found"));
     }
 
     @Override
-    public HeadTeacher updateHeadTeacher(Long id, HeadTeacher headTeacher) {
-        // Проверяем, существует ли HeadTeacher с указанным id
-        HeadTeacher existingHeadTeacher = headTeacherRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("HeadTeacher with id " + id + " not found"));
+    public Teacher removeGroupFromTeacher(Long teacherId, Long groupId) {
+        Teacher teacher = this.teacherService.getTeacherById(teacherId);
+        Group group = this.groupService.getGroupById(groupId);
 
-        // Создаем новый объект, чтобы заменить только измененные поля
-        HeadTeacher updatedHeadTeacher = new HeadTeacher(
-                existingHeadTeacher.getId(),
-                headTeacher.getName() != null ? headTeacher.getName() : existingHeadTeacher.getName(),
-                headTeacher.getSurname() != null ? headTeacher.getSurname() : existingHeadTeacher.getSurname(),
-                headTeacher.getPatronymic() != null ? headTeacher.getPatronymic() : existingHeadTeacher.getPatronymic(),
-                headTeacher.getTeachers() != null ? headTeacher.getTeachers() : existingHeadTeacher.getTeachers()
-        );
+        teacher.getGroups().remove(group);
+        group.setTeacher(null);
 
-        // Сохраняем изменения в репозиторий
-        return headTeacherRepository.save(updatedHeadTeacher);
+        this.groupService.updateGroup(groupId, group);
+        this.teacherService.updateTeacher(teacherId, teacher);
+
+        return teacher;
     }
 
     @Override
-    public void removeGroupFromTeacher(Teacher teacher, Long groupId) {
-        teacher.removeGroup(groupId);
-        teacherRepository.save(teacher); // Сохраняем изменения в репозиторий
+    public Teacher assignTeacherToGroup(Long teacherId, Long groupId) {
+        Teacher teacher = this.teacherService.getTeacherById(teacherId);
+        Group group = this.groupService.getGroupById(groupId);
 
-    }
+        List<Group> groups = teacher.getGroups();
+        if (!groups.contains(group)) {
+            groups.add(group);
+            teacher.setGroups(groups);
+            group.setTeacher(teacher);
+        }
 
-    @Override
-    public void assignTeacherToGroup(Teacher teacher, Group group) {
-        teacher.addGroup(group);
-        teacherRepository.save(teacher); // Сохраняем изменения в репозиторий
+        this.groupService.updateGroup(groupId, group);
+        this.teacherService.updateTeacher(teacherId, teacher);
+
+        return teacher;
     }
 }

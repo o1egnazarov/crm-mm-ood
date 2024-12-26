@@ -29,10 +29,19 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Student student, int amount, boolean b) {
+
+
+    public Payment(Long id, LocalDateTime paymentDateTime, Student student, int amount) {
+        this.id = id;
+        this.paymentDateTime = paymentDateTime;
         this.student = student;
         this.amount = amount;
-        this.paymentDateTime = LocalDateTime.now();
+    }
+
+    public Payment(LocalDateTime paymentDateTime, Student student, int amount) {
+        this.paymentDateTime = paymentDateTime;
+        this.student = student;
+        this.amount = amount;
     }
 
     public Long getId() {

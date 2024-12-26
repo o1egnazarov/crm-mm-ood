@@ -14,7 +14,6 @@ import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -42,7 +41,12 @@ public class Lesson {
     public Lesson() {
     }
 
-    public Lesson(Long id, String title, LocalDateTime startDateTime, LocalDateTime endDateTime, Group group, Map<Student, Boolean> attendance) {
+    public Lesson(Long id,
+                  String title,
+                  LocalDateTime startDateTime,
+                  LocalDateTime endDateTime,
+                  Group group,
+                  Map<Student, Boolean> attendance) {
         this.id = id;
         this.title = title;
         this.startDateTime = startDateTime;
@@ -50,7 +54,6 @@ public class Lesson {
         this.group = group;
         this.attendance = attendance;
     }
-
 
     public Long getId() {
         return id;

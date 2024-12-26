@@ -26,11 +26,15 @@ public class HeadTeacher {
     public HeadTeacher() {
     }
 
-    public HeadTeacher(Long id, String s, String s1, String s2, List<Teacher> teachers) {
+    public HeadTeacher(Long id,
+                       String surname,
+                       String name,
+                       String patronymic,
+                       List<Teacher> teachers) {
         this.id = id;
-        this.surname = s;
-        this.name = s1;
-        this.patronymic = s2;
+        this.surname = surname;
+        this.name = name;
+        this.patronymic = patronymic;
         this.teachers = teachers;
     }
 
@@ -73,5 +77,4 @@ public class HeadTeacher {
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
-
 }
