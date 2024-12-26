@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.noleg.crmmm.controller.mapper.LessonMapper;
 import ru.noleg.crmmm.controller.model.LessonDTO;
@@ -47,7 +46,7 @@ public class LessonController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .build();
+                .body(id);
     }
 
     @PutMapping("/{id}")
@@ -94,10 +93,18 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.OK).body(lessonDTOS);
 
     }
-//    @PostMapping("/{id}/attendance")
-//    public ResponseEntity<Map<StudentDTO,Boolean>> markAttendance(@PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long id,
-//                                                                  @RequestBody Map<StudentDTO, Boolean> attendance) {
-//
-//
-//    }
+
+    @PostMapping("/{id}/attendance")
+    public ResponseEntity<Map<StudentDTO, Boolean>> markAttendance(@PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long id,
+                                                                   @RequestBody Map<StudentDTO, Boolean> attendance) {
+
+        Map<Student, Boolean> studentMap = this.lessonMapper.toDtoMapAttendance(attendance);
+        Map<Student, Boolean> result = this.lessonService.markAttendance(id, studentMap);
+        Map<StudentDTO, Boolean> resultAttendance = this.lessonMapper.toEntityMapAttendance(result);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(resultAttendance);
+
+    }
 }
