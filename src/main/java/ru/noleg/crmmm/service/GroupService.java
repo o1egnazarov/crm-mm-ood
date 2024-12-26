@@ -1,11 +1,12 @@
 package ru.noleg.crmmm.service;
 
+import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Group;
 import ru.noleg.crmmm.entity.Student;
 
 
 import java.util.List;
-
+@Service
 public interface GroupService {
     Group createGroup(Group group);
     Group getGroupById(Long id);

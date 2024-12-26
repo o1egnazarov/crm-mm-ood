@@ -1,11 +1,12 @@
 package ru.noleg.crmmm.service;
 
+import org.springframework.stereotype.Service;
 import ru.noleg.crmmm.entity.Lesson;
 import ru.noleg.crmmm.entity.Student;
 
 import java.util.List;
 import java.util.Map;
-
+@Service
 public interface LessonService {
     Long createLesson(Lesson lesson);
     void deleteLesson(long id);

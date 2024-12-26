@@ -51,4 +51,5 @@ public class TeacherDTO {
     public void setGroups(List<GroupDTO> groups) {
         this.groups = groups;
     }
+
 }

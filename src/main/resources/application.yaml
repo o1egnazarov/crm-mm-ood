@@ -1,13 +1,28 @@
+#spring:
+#
+#  profiles:
+#    active: local
+#
+#  datasource:
+#    username: postgres
+#    password: ${db-password}
+#    url: jdbc:postgresql://localhost:5432/postgres
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+server:
+  port: 8081
+
 spring:
 
-  profiles:
-    active: local
-
   datasource:
-    username: postgres
-    password: ${db-password}
-    url: jdbc:postgresql://localhost:5432/postgres
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+    url: jdbc:h2:mem:testdb # Это создаст базу данных в памяти
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    hikari:
+      maximum-pool-size: 10
+  h2:
+    console:
+      enabled: true # Включение консоли H2 для просмотра базы данных через браузер
