@@ -73,7 +73,7 @@ public class AdminController {
                 .body(headTeacherDtoUpdated);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/head_teachers/{id}")
     public ResponseEntity<?> deleteHeadTeacher(@PathVariable @Positive
             (message = GeneralMessages.NOT_VALID_ID) Long id) {
 

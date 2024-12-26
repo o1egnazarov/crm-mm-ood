@@ -10,4 +10,6 @@ public class GeneralMessages {
 
     public static final String NOT_BLANK_EMAIL = "Email обязателен для заполнения.";
     public static final String NOT_VALID_EMAIL = "Введите корректный email.";
+
+
 }

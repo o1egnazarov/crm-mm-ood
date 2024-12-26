@@ -31,7 +31,17 @@ public class HeadTeacherServiceDefaultImpl implements HeadTeacherService {
 
     @Override
     public HeadTeacher updateHeadTeacher(Long id, HeadTeacher headTeacher) {
-        return null;
+        HeadTeacher existingHeadTeacher = this.getHeadTeacherById(id);
+
+        HeadTeacher updatedHeadTeacher = new HeadTeacher(
+                existingHeadTeacher.getId(),
+                headTeacher.getName(),
+                headTeacher.getSurname(),
+                headTeacher.getPatronymic(),
+                headTeacher.getTeachers()
+        );
+
+        return headTeacherRepository.save(updatedHeadTeacher);
     }
 
     @Override
