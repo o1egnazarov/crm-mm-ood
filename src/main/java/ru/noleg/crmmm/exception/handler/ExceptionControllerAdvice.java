@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.noleg.crmmm.exception.ErrorDetails;
 import ru.noleg.crmmm.exception.GroupNotFoundException;
 import ru.noleg.crmmm.exception.HeadTeacherNotFoundException;
+import ru.noleg.crmmm.exception.LessonNotFoundException;
 import ru.noleg.crmmm.exception.PaymentNotFoundException;
 import ru.noleg.crmmm.exception.StudentNotFoundException;
 import ru.noleg.crmmm.exception.TeacherNotFoundException;
 import ru.noleg.crmmm.messages.GroupMessages;
 import ru.noleg.crmmm.messages.HeadTeacherMessages;
+import ru.noleg.crmmm.messages.LessonMessages;
 import ru.noleg.crmmm.messages.TeacherMessages;
 
 @RestControllerAdvice
@@ -67,6 +69,19 @@ public class ExceptionControllerAdvice {
                 .body(errorDetails);
     }
 
+    @ExceptionHandler({LessonNotFoundException.class})
+    public ResponseEntity<ErrorDetails> exceptionLessonNotFound(LessonNotFoundException e) {
+        ErrorDetails errorDetails = new ErrorDetails();
+
+        errorDetails.setMessage(LessonMessages.LESSON_NOT_EXIST);
+        errorDetails.setStatus(HttpStatus.BAD_REQUEST);
+        errorDetails.setDetails(e.getMessage());
+
+        return ResponseEntity
+                .badRequest()
+                .body(errorDetails);
+    }
+
     @ExceptionHandler({HeadTeacherNotFoundException.class})
     public ResponseEntity<ErrorDetails> exceptionHeadTeacherNotFound(RuntimeException e) {
         ErrorDetails errorDetails = new ErrorDetails();
@@ -79,4 +94,18 @@ public class ExceptionControllerAdvice {
                 .badRequest()
                 .body(errorDetails);
     }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ErrorDetails> exceptionByDefault(RuntimeException e) {
+        ErrorDetails errorDetails = new ErrorDetails();
+
+
+        errorDetails.setStatus(HttpStatus.I_AM_A_TEAPOT);
+        errorDetails.setDetails(e.getMessage());
+
+        return ResponseEntity
+                .badRequest()
+                .body(errorDetails);
+    }
+
 }
