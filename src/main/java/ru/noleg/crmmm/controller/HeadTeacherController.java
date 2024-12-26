@@ -39,44 +39,6 @@ public class HeadTeacherController {
         this.teacherMapper = teacherMapper;
     }
 
-
-    @PostMapping
-    public ResponseEntity<?> createHeadTeacher(@RequestBody HeadTeacherDTO headTeacherDTO) {
-        this.validator.validationRequest(headTeacherDTO);
-
-        HeadTeacher headTeacher = headTeacherMapper.toEntity(headTeacherDTO);
-        this.headTeacherService.createHeadTeacher(headTeacher);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<HeadTeacherDTO> updateHeadTeacher(@PathVariable @Positive(message = GeneralMessages.NOT_VALID_ID) Long id,
-                                                            @RequestBody HeadTeacherDTO headTeacherDTO) {
-        this.validator.validationRequest(headTeacherDTO);
-
-        HeadTeacher headTeacher = headTeacherMapper.toEntity(headTeacherDTO);
-        HeadTeacher headTeacherUpdated = this.headTeacherService.updateHeadTeacher(id, headTeacher);
-        HeadTeacherDTO headTeacherDtoUpdated = headTeacherMapper.toDto(headTeacherUpdated);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(headTeacherDtoUpdated);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteHeadTeacher(@PathVariable @Positive
-            (message = GeneralMessages.NOT_VALID_ID) Long id) {
-
-        this.headTeacherService.deleteHeadTeacher(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
-
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<HeadTeacherDTO> getHeadTeacher(@PathVariable @Positive
             (message = GeneralMessages.NOT_VALID_ID) Long id) {

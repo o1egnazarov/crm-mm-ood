@@ -39,11 +39,11 @@ public class LessonController {
 
 
     @PostMapping
-    public ResponseEntity<?> createLesson(@RequestBody LessonDTO lessonDTO) {
+    public ResponseEntity<Long> createLesson(@RequestBody LessonDTO lessonDTO) {
         this.validator.validationRequest(lessonDTO);
 
         Lesson lesson = lessonMapper.toEntity(lessonDTO);
-        this.lessonService.createLesson(lesson);
+        Long id = this.lessonService.createLesson(lesson);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

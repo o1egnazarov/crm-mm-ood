@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface LessonService {
-    void createLesson(Lesson lesson);
+    Long createLesson(Lesson lesson);
     Lesson updateLesson(Long id, Lesson lesson);
     void deleteLesson(Long id);
     Lesson getLessonById(Long id);

@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface PaymentService {
 
-    void acceptPayment(Payment payment);
+    Payment acceptPayment(Payment payment);
 
     void deletePayment(long id);
 

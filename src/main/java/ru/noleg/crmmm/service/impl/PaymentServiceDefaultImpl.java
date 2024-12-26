@@ -19,8 +19,8 @@ public class PaymentServiceDefaultImpl implements PaymentService {
     }
 
     @Override
-    public void acceptPayment(Payment payment) {
-        paymentRepository.save(payment);
+    public Payment acceptPayment(Payment payment) {
+        return paymentRepository.save(payment);
     }
 
     @Override
